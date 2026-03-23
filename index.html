@@ -1,119 +1,547 @@
-index.html
 <!DOCTYPE html>
 <html>
 <head>
-<title>TopOne Flooring Invoice</title>
+  <title>TopOne Flooring System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body{
-font-family: Arial;
-background:black;
-color:gold;
-padding:40px;
-}
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background:#000;
+      color:gold;
+      padding:20px;
+      margin:0;
+    }
 
-input, select{
-padding:10px;
-width:300px;
-margin-bottom:15px;
-}
+    .container{
+      max-width:900px;
+      margin:auto;
+      background:#111;
+      padding:20px;
+      border-radius:12px;
+    }
 
-button{
-padding:12px 20px;
-background:gold;
-border:none;
-cursor:pointer;
-margin-right:10px;
-margin-top:10px;
-}
+    h1,h2,h3{
+      margin-top:0;
+    }
 
-.box{
-background:#111;
-padding:25px;
-width:380px;
-}
+    input, select, button, textarea{
+      padding:10px;
+      margin:6px 0;
+      width:100%;
+      box-sizing:border-box;
+      border:none;
+      border-radius:6px;
+      font-size:16px;
+    }
 
-#result{
-margin-top:20px;
-line-height:1.8;
-}
-</style>
+    input, select, textarea{
+      background:#fff;
+      color:#000;
+    }
 
+    button{
+      background:gold;
+      color:#000;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    button:hover{
+      opacity:0.9;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .item{
+      background:#1b1b1b;
+      padding:12px;
+      margin-bottom:10px;
+      border-radius:8px;
+      border:1px solid #333;
+    }
+
+    .item-grid{
+      display:grid;
+      grid-template-columns:2fr 1fr 1fr 1fr auto;
+      gap:10px;
+      align-items:end;
+    }
+
+    .small-btn{
+      width:auto;
+      padding:10px 14px;
+    }
+
+    .action-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .history-box{
+      background:#1b1b1b;
+      padding:12px;
+      margin-top:10px;
+      border-radius:8px;
+      border:1px solid #333;
+      color:#fff4b3;
+    }
+
+    .section{
+      margin-top:20px;
+      padding-top:15px;
+      border-top:1px solid #333;
+    }
+
+    #total{
+      background:#1b1b1b;
+      padding:15px;
+      border-radius:8px;
+      margin-top:15px;
+      line-height:1.8;
+      color:#fff4b3;
+    }
+
+    @media (max-width: 700px){
+      .row{
+        grid-template-columns:1fr;
+      }
+
+      .item-grid{
+        grid-template-columns:1fr;
+      }
+
+      .action-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media print{
+      body{
+        background:#fff;
+        color:#000;
+      }
+
+      .container{
+        background:#fff;
+        color:#000;
+      }
+
+      button{
+        display:none;
+      }
+
+      input, select, textarea{
+        border:1px solid #ccc;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="box">
+  <div class="container">
+    <h1>TopOne Flooring Invoice System</h1>
 
-<h1>TopOne Flooring</h1>
+    <div class="row">
+      <div>
+        <label>Invoice Number</label>
+        <input id="invoice" readonly>
+      </div>
+      <div>
+        <label>Work Order Number</label>
+        <input id="workOrder" placeholder="Enter work order number">
+      </div>
+    </div>
 
-<label>Customer Name</label><br>
-<input type="text" id="name"><br>
+    <div class="row">
+      <div>
+        <label>Date</label>
+        <input type="date" id="date">
+      </div>
+      <div>
+        <label>Saved Clients</label>
+        <select id="clientList">
+          <option value="">Select Client</option>
+        </select>
+      </div>
+    </div>
 
-<label>Service</label><br>
-<select id="service">
-<option>Carpet Installation</option>
-<option>LVP Installation</option>
-<option>Linoleum Installation</option>
-<option>Flooring Repairs</option>
-</select><br>
+    <div class="row">
+      <div>
+        <label>Customer Name</label>
+        <input id="name" placeholder="Customer name">
+      </div>
+      <div>
+        <label>Phone Number</label>
+        <input id="phone" placeholder="Phone number">
+      </div>
+    </div>
 
-<label>Square Feet</label><br>
-<input type="number" id="sqft"><br>
+    <div class="row">
+      <div>
+        <label>Address</label>
+        <input id="address" placeholder="Customer address">
+      </div>
+      <div>
+        <label>Job Site</label>
+        <input id="site" placeholder="Job site">
+      </div>
+    </div>
 
-<label>Price Per Sqft</label><br>
-<input type="number" id="rate"><br>
+    <div class="row">
+      <div>
+        <label>Email</label>
+        <input id="email" placeholder="Customer email">
+      </div>
+      <div>
+        <label>Notes</label>
+        <textarea id="notes" placeholder="Notes"></textarea>
+      </div>
+    </div>
 
-<label>Removal Cost</label><br>
-<input type="number" id="removal" value="0"><br>
+    <div class="action-grid">
+      <button onclick="saveClient()">Save Client</button>
+      <button onclick="addItem()">Add Item</button>
+      <button onclick="calculateTotal()">Calculate Total</button>
+    </div>
 
-<label>Stairs Cost</label><br>
-<input type="number" id="stairs" value="0"><br>
+    <div class="section">
+      <h2>Items</h2>
+      <div id="items"></div>
+    </div>
 
-<label>Dump Fee</label><br>
-<input type="number" id="dump" value="0"><br>
+    <div id="total">No total yet.</div>
 
-<label>Moving Furniture</label><br>
-<input type="number" id="furniture" value="0"><br>
+    <div class="action-grid">
+      <button onclick="saveInvoice()">Save Invoice</button>
+      <button onclick="newInvoice()">Add New Invoice</button>
+      <button onclick="window.print()">Print Invoice</button>
+      <button onclick="sendSMS()">Send by Number</button>
+      <button onclick="sendEmail()">Send by Email</button>
+      <button onclick="downloadBackup()">Download Backup</button>
+    </div>
 
-<button onclick="calc()">Create Invoice</button>
-<button onclick="window.print()">Print</button>
+    <div class="section">
+      <h3>Saved Invoices</h3>
+      <div id="history"></div>
+    </div>
+  </div>
 
-<div id="result"></div>
+  <script>
+    function todayDate() {
+      const d = new Date();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return d.getFullYear() + '-' + month + '-' + day;
+    }
 
-</div>
+    function getNextInvoiceNumber() {
+      let num = localStorage.getItem("invoiceNo");
+      if (!num) {
+        num = 1001;
+        localStorage.setItem("invoiceNo", num);
+      }
+      return parseInt(num, 10);
+    }
 
-<script>
-function calc(){
+    function showInvoiceNumber() {
+      document.getElementById("invoice").value = getNextInvoiceNumber();
+    }
 
-let name = document.getElementById("name").value;
-let service = document.getElementById("service").value;
-let sqft = Number(document.getElementById("sqft").value);
-let rate = Number(document.getElementById("rate").value);
-let removal = Number(document.getElementById("removal").value);
-let stairs = Number(document.getElementById("stairs").value);
-let dump = Number(document.getElementById("dump").value);
-let furniture = Number(document.getElementById("furniture").value);
+    function addItem(service = "", description = "", qty = "", rate = "", extra = "") {
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "item";
 
-let install = sqft * rate;
-let subtotal = install + removal + stairs + dump + furniture;
-let tax = subtotal * 0.05;
-let total = subtotal + tax;
+      itemDiv.innerHTML = `
+        <div class="item-grid">
+          <div>
+            <label>Service</label>
+            <input class="service" placeholder="Carpet / LVP / Lino / Repair" value="${service}">
+          </div>
+          <div>
+            <label>Qty</label>
+            <input type="number" class="qty" placeholder="0" value="${qty}">
+          </div>
+          <div>
+            <label>Rate</label>
+            <input type="number" class="rate" placeholder="0" value="${rate}">
+          </div>
+          <div>
+            <label>Extra</label>
+            <input type="number" class="extra" placeholder="0" value="${extra}">
+          </div>
+          <div>
+            <label>Remove</label>
+            <button type="button" class="small-btn" onclick="this.closest('.item').remove(); calculateTotal();">X</button>
+          </div>
+        </div>
+        <div style="margin-top:10px;">
+          <label>Description</label>
+          <input class="description" placeholder="Description" value="${description}">
+        </div>
+      `;
 
-document.getElementById("result").innerHTML =
-"<h2>Invoice</h2>" +
-"Customer: " + name + "<br>" +
-"Service: " + service + "<br>" +
-"Install Cost: $" + install.toFixed(2) + "<br>" +
-"Removal: $" + removal.toFixed(2) + "<br>" +
-"Stairs: $" + stairs.toFixed(2) + "<br>" +
-"Dump Fee: $" + dump.toFixed(2) + "<br>" +
-"Moving Furniture: $" + furniture.toFixed(2) + "<br>" +
-"Subtotal: $" + subtotal.toFixed(2) + "<br>" +
-"GST: $" + tax.toFixed(2) + "<br>" +
-"<b>Total: $" + total.toFixed(2) + "</b>";
-}
-</script>
+      document.getElementById("items").appendChild(itemDiv);
+    }
 
+    function calculateTotal() {
+      const items = document.querySelectorAll(".item");
+      let subtotal = 0;
+
+      items.forEach(item => {
+        const qty = parseFloat(item.querySelector(".qty").value) || 0;
+        const rate = parseFloat(item.querySelector(".rate").value) || 0;
+        const extra = parseFloat(item.querySelector(".extra").value) || 0;
+        subtotal += (qty * rate) + extra;
+      });
+
+      const gst = subtotal * 0.05;
+      const total = subtotal + gst;
+
+      document.getElementById("total").innerHTML =
+        "Subtotal: $" + subtotal.toFixed(2) +
+        "<br>GST (5%): $" + gst.toFixed(2) +
+        "<br><b>Total: $" + total.toFixed(2) + "</b>";
+
+      return {
+        subtotal: subtotal.toFixed(2),
+        gst: gst.toFixed(2),
+        total: total.toFixed(2)
+      };
+    }
+
+    function saveClient() {
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const address = document.getElementById("address").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const site = document.getElementById("site").value.trim();
+
+      if (!name) {
+        alert("Enter customer name first");
+        return;
+      }
+
+      const client = { name, phone, address, email, site };
+      localStorage.setItem("client_" + name, JSON.stringify(client));
+      loadClients();
+      alert("Client Saved");
+    }
+
+    function loadClients() {
+      const list = document.getElementById("clientList");
+      list.innerHTML = '<option value="">Select Client</option>';
+
+      const clientNames = [];
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith("client_")) {
+          clientNames.push(key.replace("client_", ""));
+        }
+      }
+
+      clientNames.sort();
+
+      clientNames.forEach(name => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        list.appendChild(option);
+      });
+    }
+
+    document.addEventListener("change", function(e) {
+      if (e.target && e.target.id === "clientList") {
+        const selected = e.target.value;
+        if (!selected) return;
+
+        const data = localStorage.getItem("client_" + selected);
+        if (!data) return;
+
+        const client = JSON.parse(data);
+        document.getElementById("name").value = client.name || "";
+        document.getElementById("phone").value = client.phone || "";
+        document.getElementById("address").value = client.address || "";
+        document.getElementById("email").value = client.email || "";
+        document.getElementById("site").value = client.site || "";
+      }
+    });
+
+    function collectItems() {
+      const items = document.querySelectorAll(".item");
+      const itemData = [];
+
+      items.forEach(item => {
+        itemData.push({
+          service: item.querySelector(".service").value,
+          description: item.querySelector(".description").value,
+          qty: item.querySelector(".qty").value,
+          rate: item.querySelector(".rate").value,
+          extra: item.querySelector(".extra").value
+        });
+      });
+
+      return itemData;
+    }
+
+    function saveInvoice() {
+      const totals = calculateTotal();
+
+      const invoiceNumber = document.getElementById("invoice").value;
+      const invoiceData = {
+        invoice: invoiceNumber,
+        workOrder: document.getElementById("workOrder").value,
+        date: document.getElementById("date").value,
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        address: document.getElementById("address").value,
+        site: document.getElementById("site").value,
+        email: document.getElementById("email").value,
+        notes: document.getElementById("notes").value,
+        items: collectItems(),
+        subtotal: totals.subtotal,
+        gst: totals.gst,
+        total: totals.total
+      };
+
+      localStorage.setItem("invoice_" + invoiceNumber, JSON.stringify(invoiceData));
+      loadHistory();
+      alert("Invoice Saved");
+    }
+
+    function loadHistory() {
+      const historyDiv = document.getElementById("history");
+      historyDiv.innerHTML = "";
+
+      const invoices = [];
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith("invoice_")) {
+          const data = localStorage.getItem(key);
+          try {
+            invoices.push(JSON.parse(data));
+          } catch (e) {}
+        }
+      }
+
+      invoices.sort((a, b) => Number(b.invoice) - Number(a.invoice));
+
+      if (invoices.length === 0) {
+        historyDiv.innerHTML = '<div class="history-box">No saved invoices yet.</div>';
+        return;
+      }
+
+      invoices.forEach(inv => {
+        const box = document.createElement("div");
+        box.className = "history-box";
+        box.innerHTML =
+          "<b>Invoice #:</b> " + (inv.invoice || "") +
+          "<br><b>Date:</b> " + (inv.date || "") +
+          "<br><b>Customer:</b> " + (inv.name || "") +
+          "<br><b>Phone:</b> " + (inv.phone || "") +
+          "<br><b>Job Site:</b> " + (inv.site || "") +
+          "<br><b>Total:</b> $" + (inv.total || "0.00");
+        historyDiv.appendChild(box);
+      });
+    }
+
+    function newInvoice() {
+      let num = getNextInvoiceNumber();
+      num++;
+      localStorage.setItem("invoiceNo", num);
+
+      document.getElementById("invoice").value = num;
+      document.getElementById("workOrder").value = "";
+      document.getElementById("date").value = todayDate();
+      document.getElementById("name").value = "";
+      document.getElementById("phone").value = "";
+      document.getElementById("address").value = "";
+      document.getElementById("site").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("notes").value = "";
+      document.getElementById("clientList").value = "";
+      document.getElementById("items").innerHTML = "";
+      document.getElementById("total").innerHTML = "No total yet.";
+
+      addItem();
+    }
+
+    function sendSMS() {
+      const phone = document.getElementById("phone").value.trim();
+      const totals = calculateTotal();
+      const name = document.getElementById("name").value.trim();
+      const invoice = document.getElementById("invoice").value.trim();
+
+      if (!phone) {
+        alert("Add phone number first");
+        return;
+      }
+
+      const msg = encodeURIComponent(
+        "Hello " + name +
+        ", your TopOne Flooring invoice #" + invoice +
+        " total is $" + totals.total
+      );
+
+      window.location.href = "sms:" + phone + "?body=" + msg;
+    }
+
+    function sendEmail() {
+      const email = document.getElementById("email").value.trim();
+      const totals = calculateTotal();
+      const name = document.getElementById("name").value.trim();
+      const invoice = document.getElementById("invoice").value.trim();
+
+      if (!email) {
+        alert("Add email first");
+        return;
+      }
+
+      const subject = encodeURIComponent("TopOne Flooring Invoice #" + invoice);
+      const body = encodeURIComponent(
+        "Hello " + name + ",\n\n" +
+        "Your invoice total is $" + totals.total + ".\n\n" +
+        "Thank you,\nTopOne Flooring"
+      );
+
+      window.location.href = "mailto:" + email + "?subject=" + subject + "&body=" + body;
+    }
+
+    function downloadBackup() {
+      const data = {};
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (
+          key.startsWith("invoice_") ||
+          key.startsWith("client_") ||
+          key === "invoiceNo"
+        ) {
+          data[key] = localStorage.getItem(key);
+        }
+      }
+
+      const file = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(file);
+      a.download = "topone_backup.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    document.getElementById("date").value = todayDate();
+    showInvoiceNumber();
+    loadClients();
+    loadHistory();
+    addItem();
+  </script>
 </body>
 </html>
