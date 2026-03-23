@@ -1,54 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>TopOne Flooring System</title>
+  <title>TopOne Invoice</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/jspdf-autotable@latest/dist/jspdf.plugin.autotable.min.js"></script>
 
   <style>
     body{
       font-family: Arial, sans-serif;
       background:#000;
       color:gold;
-      padding:20px;
       margin:0;
+      padding:20px;
     }
 
     .container{
-      max-width:900px;
+      max-width:1100px;
       margin:auto;
       background:#111;
       padding:20px;
-      border-radius:12px;
+      border-radius:14px;
     }
 
     h1,h2,h3{
       margin-top:0;
     }
 
-    input, select, button, textarea{
-      padding:10px;
-      margin:6px 0;
-      width:100%;
-      box-sizing:border-box;
-      border:none;
-      border-radius:6px;
-      font-size:16px;
-    }
-
-    input, select, textarea{
-      background:#fff;
-      color:#000;
-    }
-
-    button{
-      background:gold;
-      color:#000;
-      cursor:pointer;
-      font-weight:bold;
-    }
-
-    button:hover{
-      opacity:0.9;
+    .section{
+      margin-top:20px;
+      padding-top:15px;
+      border-top:1px solid #333;
     }
 
     .row{
@@ -57,17 +40,61 @@
       gap:12px;
     }
 
+    .row-3{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:12px;
+    }
+
+    input, select, textarea, button{
+      width:100%;
+      box-sizing:border-box;
+      padding:10px;
+      border-radius:8px;
+      border:none;
+      font-size:16px;
+      margin-top:5px;
+    }
+
+    input, select, textarea{
+      background:#fff;
+      color:#000;
+    }
+
+    textarea{
+      min-height:90px;
+      resize:vertical;
+    }
+
+    button{
+      background:gold;
+      color:#000;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    button:hover{
+      opacity:0.92;
+    }
+
+    .action-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+
     .item{
       background:#1b1b1b;
-      padding:12px;
-      margin-bottom:10px;
-      border-radius:8px;
       border:1px solid #333;
+      padding:12px;
+      border-radius:10px;
+      margin-bottom:10px;
     }
 
     .item-grid{
       display:grid;
-      grid-template-columns:2fr 1fr 1fr 1fr auto;
+      grid-template-columns:1.2fr 1.5fr 0.8fr 0.8fr 0.8fr auto;
       gap:10px;
       align-items:end;
     }
@@ -77,48 +104,77 @@
       padding:10px 14px;
     }
 
-    .action-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:10px;
-      margin-top:10px;
-    }
-
     .history-box{
       background:#1b1b1b;
-      padding:12px;
-      margin-top:10px;
-      border-radius:8px;
       border:1px solid #333;
+      padding:12px;
+      border-radius:10px;
+      margin-top:10px;
       color:#fff4b3;
     }
 
-    .section{
-      margin-top:20px;
-      padding-top:15px;
-      border-top:1px solid #333;
+    .history-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
     }
 
-    #total{
-      background:#1b1b1b;
-      padding:15px;
-      border-radius:8px;
+    .preview-box{
+      background:#fff;
+      color:#000;
+      border-radius:10px;
+      padding:20px;
       margin-top:15px;
-      line-height:1.8;
-      color:#fff4b3;
     }
 
-    @media (max-width: 700px){
-      .row{
+    .preview-header{
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      border-bottom:2px solid #ddd;
+      padding-bottom:15px;
+      margin-bottom:15px;
+    }
+
+    .preview-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:15px;
+    }
+
+    .preview-table th, .preview-table td{
+      border:1px solid #ccc;
+      padding:8px;
+      text-align:left;
+      font-size:14px;
+    }
+
+    .totals{
+      margin-top:15px;
+      max-width:320px;
+      margin-left:auto;
+    }
+
+    .totals div{
+      display:flex;
+      justify-content:space-between;
+      padding:6px 0;
+    }
+
+    .company-title{
+      font-size:28px;
+      font-weight:bold;
+      letter-spacing:0.5px;
+    }
+
+    @media (max-width: 800px){
+      .row, .row-3, .action-grid, .item-grid{
         grid-template-columns:1fr;
       }
 
-      .item-grid{
-        grid-template-columns:1fr;
-      }
-
-      .action-grid{
-        grid-template-columns:1fr;
+      .preview-header{
+        flex-direction:column;
       }
     }
 
@@ -126,110 +182,185 @@
       body{
         background:#fff;
         color:#000;
+        padding:0;
       }
 
       .container{
         background:#fff;
         color:#000;
+        max-width:none;
+        border-radius:0;
+        padding:0;
       }
 
-      button{
-        display:none;
+      .no-print{
+        display:none !important;
       }
 
-      input, select, textarea{
-        border:1px solid #ccc;
+      #previewSection{
+        display:block !important;
       }
     }
   </style>
 </head>
 <body>
-
   <div class="container">
-    <h1>TopOne Flooring Invoice System</h1>
+    <h1>TopOne Invoice</h1>
 
-    <div class="row">
-      <div>
-        <label>Invoice Number</label>
-        <input id="invoice" readonly>
+    <div class="section no-print">
+      <h2>Company Info</h2>
+
+      <div class="row">
+        <div>
+          <label>Company Name</label>
+          <input id="companyName" placeholder="TopOne Flooring Services Ltd">
+        </div>
+        <div>
+          <label>Company Email</label>
+          <input id="companyEmail" placeholder="toponeflooringservices@gmail.com">
+        </div>
       </div>
+
+      <div class="row">
+        <div>
+          <label>Phone 1</label>
+          <input id="companyPhone1" placeholder="780-918-6381">
+        </div>
+        <div>
+          <label>Phone 2</label>
+          <input id="companyPhone2" placeholder="306-717-5985">
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Company Address</label>
+          <input id="companyAddress" placeholder="Edmonton, Alberta">
+        </div>
+        <div>
+          <label>Website</label>
+          <input id="companyWebsite" placeholder="Website">
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>GST Number</label>
+          <input id="companyGSTNumber" placeholder="GST Number">
+        </div>
+        <div>
+          <label>Tax %</label>
+          <input id="taxRate" type="number" value="5">
+        </div>
+      </div>
+
       <div>
-        <label>Work Order Number</label>
-        <input id="workOrder" placeholder="Enter work order number">
+        <label>Default Notes / Warranty</label>
+        <textarea id="companyNotes" placeholder="Thank you for choosing TopOne."></textarea>
+      </div>
+
+      <div class="action-grid">
+        <button onclick="saveCompanyInfo()">Save Company Info</button>
+        <button onclick="loadCompanyInfo()">Load Company Info</button>
+        <button onclick="clearCompanyInfo()">Clear Company Info</button>
+        <button onclick="previewInvoice()">Preview Invoice</button>
       </div>
     </div>
 
-    <div class="row">
-      <div>
-        <label>Date</label>
-        <input type="date" id="date">
-      </div>
-      <div>
-        <label>Saved Clients</label>
-        <select id="clientList">
-          <option value="">Select Client</option>
-        </select>
-      </div>
-    </div>
+    <div class="section no-print">
+      <h2>Invoice Details</h2>
 
-    <div class="row">
-      <div>
-        <label>Customer Name</label>
-        <input id="name" placeholder="Customer name">
+      <div class="row-3">
+        <div>
+          <label>Invoice Number</label>
+          <input id="invoice" readonly>
+        </div>
+        <div>
+          <label>Work Order Number</label>
+          <input id="workOrder" placeholder="Work order number">
+        </div>
+        <div>
+          <label>Date</label>
+          <input id="date" type="date">
+        </div>
       </div>
-      <div>
-        <label>Phone Number</label>
-        <input id="phone" placeholder="Phone number">
-      </div>
-    </div>
 
-    <div class="row">
-      <div>
-        <label>Address</label>
-        <input id="address" placeholder="Customer address">
+      <div class="row">
+        <div>
+          <label>Saved Clients</label>
+          <select id="clientList">
+            <option value="">Select Client</option>
+          </select>
+        </div>
+        <div>
+          <label>Email</label>
+          <input id="email" placeholder="Customer email">
+        </div>
       </div>
-      <div>
-        <label>Job Site</label>
-        <input id="site" placeholder="Job site">
-      </div>
-    </div>
 
-    <div class="row">
-      <div>
-        <label>Email</label>
-        <input id="email" placeholder="Customer email">
+      <div class="row">
+        <div>
+          <label>Customer Name</label>
+          <input id="name" placeholder="Customer name">
+        </div>
+        <div>
+          <label>Phone Number</label>
+          <input id="phone" placeholder="Phone number">
+        </div>
       </div>
+
+      <div class="row">
+        <div>
+          <label>Billing Address</label>
+          <input id="address" placeholder="Billing address">
+        </div>
+        <div>
+          <label>Job Site</label>
+          <input id="site" placeholder="Job site">
+        </div>
+      </div>
+
       <div>
         <label>Notes</label>
-        <textarea id="notes" placeholder="Notes"></textarea>
+        <textarea id="notes" placeholder="Job notes"></textarea>
+      </div>
+
+      <div class="action-grid">
+        <button onclick="saveClient()">Save Client</button>
+        <button onclick="addItem()">Add Item</button>
+        <button onclick="calculateAndAlert()">Calculate Total</button>
+        <button onclick="newInvoice()">Add New Invoice</button>
       </div>
     </div>
 
-    <div class="action-grid">
-      <button onclick="saveClient()">Save Client</button>
-      <button onclick="addItem()">Add Item</button>
-      <button onclick="calculateTotal()">Calculate Total</button>
-    </div>
-
-    <div class="section">
+    <div class="section no-print">
       <h2>Items</h2>
       <div id="items"></div>
     </div>
 
-    <div id="total">No total yet.</div>
-
-    <div class="action-grid">
-      <button onclick="saveInvoice()">Save Invoice</button>
-      <button onclick="newInvoice()">Add New Invoice</button>
-      <button onclick="window.print()">Print Invoice</button>
-      <button onclick="sendSMS()">Send by Number</button>
-      <button onclick="sendEmail()">Send by Email</button>
-      <button onclick="downloadBackup()">Download Backup</button>
+    <div class="section no-print">
+      <div class="action-grid">
+        <button onclick="saveInvoice()">Save Invoice</button>
+        <button onclick="previewInvoice()">Preview Invoice</button>
+        <button onclick="printPreview()">Print Preview</button>
+        <button onclick="downloadPDF()">Download PDF</button>
+        <button onclick="sendSMS()">Send by Number</button>
+        <button onclick="sendEmail()">Send by Email</button>
+        <button onclick="downloadBackup()">Download Backup</button>
+        <button onclick="loadCompanyInfo()">Reload Company Info</button>
+      </div>
     </div>
 
-    <div class="section">
+    <div class="section no-print">
       <h3>Saved Invoices</h3>
       <div id="history"></div>
+    </div>
+
+    <div class="section" id="previewSection">
+      <h2 class="no-print">Invoice Preview</h2>
+      <div class="preview-box">
+        <div id="previewContent">No preview yet.</div>
+      </div>
     </div>
   </div>
 
@@ -254,6 +385,54 @@
       document.getElementById("invoice").value = getNextInvoiceNumber();
     }
 
+    function saveCompanyInfo() {
+      const company = {
+        companyName: document.getElementById("companyName").value,
+        companyEmail: document.getElementById("companyEmail").value,
+        companyPhone1: document.getElementById("companyPhone1").value,
+        companyPhone2: document.getElementById("companyPhone2").value,
+        companyAddress: document.getElementById("companyAddress").value,
+        companyWebsite: document.getElementById("companyWebsite").value,
+        companyGSTNumber: document.getElementById("companyGSTNumber").value,
+        taxRate: document.getElementById("taxRate").value,
+        companyNotes: document.getElementById("companyNotes").value
+      };
+
+      localStorage.setItem("companyInfo", JSON.stringify(company));
+      alert("Company info saved");
+    }
+
+    function loadCompanyInfo() {
+      const data = localStorage.getItem("companyInfo");
+      if (!data) return;
+
+      const company = JSON.parse(data);
+
+      document.getElementById("companyName").value = company.companyName || "";
+      document.getElementById("companyEmail").value = company.companyEmail || "";
+      document.getElementById("companyPhone1").value = company.companyPhone1 || "";
+      document.getElementById("companyPhone2").value = company.companyPhone2 || "";
+      document.getElementById("companyAddress").value = company.companyAddress || "";
+      document.getElementById("companyWebsite").value = company.companyWebsite || "";
+      document.getElementById("companyGSTNumber").value = company.companyGSTNumber || "";
+      document.getElementById("taxRate").value = company.taxRate || "5";
+      document.getElementById("companyNotes").value = company.companyNotes || "";
+    }
+
+    function clearCompanyInfo() {
+      localStorage.removeItem("companyInfo");
+
+      document.getElementById("companyName").value = "";
+      document.getElementById("companyEmail").value = "";
+      document.getElementById("companyPhone1").value = "";
+      document.getElementById("companyPhone2").value = "";
+      document.getElementById("companyAddress").value = "";
+      document.getElementById("companyWebsite").value = "";
+      document.getElementById("companyGSTNumber").value = "";
+      document.getElementById("taxRate").value = "5";
+      document.getElementById("companyNotes").value = "";
+    }
+
     function addItem(service = "", description = "", qty = "", rate = "", extra = "") {
       const itemDiv = document.createElement("div");
       itemDiv.className = "item";
@@ -262,32 +441,49 @@
         <div class="item-grid">
           <div>
             <label>Service</label>
-            <input class="service" placeholder="Carpet / LVP / Lino / Repair" value="${service}">
+            <input class="service" value="${service}" placeholder="Carpet / LVP / Lino / Repair">
+          </div>
+          <div>
+            <label>Description</label>
+            <input class="description" value="${description}" placeholder="Room / area">
           </div>
           <div>
             <label>Qty</label>
-            <input type="number" class="qty" placeholder="0" value="${qty}">
+            <input class="qty" type="number" value="${qty}" placeholder="0">
           </div>
           <div>
             <label>Rate</label>
-            <input type="number" class="rate" placeholder="0" value="${rate}">
+            <input class="rate" type="number" value="${rate}" placeholder="0">
           </div>
           <div>
             <label>Extra</label>
-            <input type="number" class="extra" placeholder="0" value="${extra}">
+            <input class="extra" type="number" value="${extra}" placeholder="0">
           </div>
           <div>
             <label>Remove</label>
-            <button type="button" class="small-btn" onclick="this.closest('.item').remove(); calculateTotal();">X</button>
+            <button type="button" class="small-btn" onclick="this.closest('.item').remove();">X</button>
           </div>
-        </div>
-        <div style="margin-top:10px;">
-          <label>Description</label>
-          <input class="description" placeholder="Description" value="${description}">
         </div>
       `;
 
       document.getElementById("items").appendChild(itemDiv);
+    }
+
+    function collectItems() {
+      const items = document.querySelectorAll(".item");
+      const itemData = [];
+
+      items.forEach(item => {
+        itemData.push({
+          service: item.querySelector(".service").value,
+          description: item.querySelector(".description").value,
+          qty: item.querySelector(".qty").value,
+          rate: item.querySelector(".rate").value,
+          extra: item.querySelector(".extra").value
+        });
+      });
+
+      return itemData;
     }
 
     function calculateTotal() {
@@ -301,37 +497,46 @@
         subtotal += (qty * rate) + extra;
       });
 
-      const gst = subtotal * 0.05;
+      const taxPercent = parseFloat(document.getElementById("taxRate").value) || 0;
+      const gst = subtotal * (taxPercent / 100);
       const total = subtotal + gst;
-
-      document.getElementById("total").innerHTML =
-        "Subtotal: $" + subtotal.toFixed(2) +
-        "<br>GST (5%): $" + gst.toFixed(2) +
-        "<br><b>Total: $" + total.toFixed(2) + "</b>";
 
       return {
         subtotal: subtotal.toFixed(2),
         gst: gst.toFixed(2),
-        total: total.toFixed(2)
+        total: total.toFixed(2),
+        taxPercent: taxPercent.toFixed(2)
       };
+    }
+
+    function calculateAndAlert() {
+      const totals = calculateTotal();
+      alert(
+        "Subtotal: $" + totals.subtotal +
+        "\nTax: $" + totals.gst +
+        "\nTotal: $" + totals.total
+      );
     }
 
     function saveClient() {
       const name = document.getElementById("name").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const address = document.getElementById("address").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const site = document.getElementById("site").value.trim();
 
       if (!name) {
         alert("Enter customer name first");
         return;
       }
 
-      const client = { name, phone, address, email, site };
+      const client = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        address: document.getElementById("address").value,
+        site: document.getElementById("site").value,
+        email: document.getElementById("email").value
+      };
+
       localStorage.setItem("client_" + name, JSON.stringify(client));
       loadClients();
-      alert("Client Saved");
+      alert("Client saved");
     }
 
     function loadClients() {
@@ -366,37 +571,20 @@
         if (!data) return;
 
         const client = JSON.parse(data);
+
         document.getElementById("name").value = client.name || "";
         document.getElementById("phone").value = client.phone || "";
         document.getElementById("address").value = client.address || "";
-        document.getElementById("email").value = client.email || "";
         document.getElementById("site").value = client.site || "";
+        document.getElementById("email").value = client.email || "";
       }
     });
 
-    function collectItems() {
-      const items = document.querySelectorAll(".item");
-      const itemData = [];
-
-      items.forEach(item => {
-        itemData.push({
-          service: item.querySelector(".service").value,
-          description: item.querySelector(".description").value,
-          qty: item.querySelector(".qty").value,
-          rate: item.querySelector(".rate").value,
-          extra: item.querySelector(".extra").value
-        });
-      });
-
-      return itemData;
-    }
-
-    function saveInvoice() {
+    function getCurrentInvoiceData() {
       const totals = calculateTotal();
 
-      const invoiceNumber = document.getElementById("invoice").value;
-      const invoiceData = {
-        invoice: invoiceNumber,
+      return {
+        invoice: document.getElementById("invoice").value,
         workOrder: document.getElementById("workOrder").value,
         date: document.getElementById("date").value,
         name: document.getElementById("name").value,
@@ -406,14 +594,57 @@
         email: document.getElementById("email").value,
         notes: document.getElementById("notes").value,
         items: collectItems(),
-        subtotal: totals.subtotal,
-        gst: totals.gst,
-        total: totals.total
+        totals: totals
       };
+    }
 
-      localStorage.setItem("invoice_" + invoiceNumber, JSON.stringify(invoiceData));
+    function saveInvoice() {
+      const invoiceData = getCurrentInvoiceData();
+
+      if (!invoiceData.name) {
+        alert("Enter customer name first");
+        return;
+      }
+
+      localStorage.setItem("invoice_" + invoiceData.invoice, JSON.stringify(invoiceData));
       loadHistory();
-      alert("Invoice Saved");
+      alert("Invoice saved");
+    }
+
+    function openInvoice(invoiceNumber) {
+      const data = localStorage.getItem("invoice_" + invoiceNumber);
+      if (!data) return;
+
+      const inv = JSON.parse(data);
+
+      document.getElementById("invoice").value = inv.invoice || "";
+      document.getElementById("workOrder").value = inv.workOrder || "";
+      document.getElementById("date").value = inv.date || todayDate();
+      document.getElementById("name").value = inv.name || "";
+      document.getElementById("phone").value = inv.phone || "";
+      document.getElementById("address").value = inv.address || "";
+      document.getElementById("site").value = inv.site || "";
+      document.getElementById("email").value = inv.email || "";
+      document.getElementById("notes").value = inv.notes || "";
+      document.getElementById("items").innerHTML = "";
+
+      if (inv.items && inv.items.length) {
+        inv.items.forEach(item => {
+          addItem(item.service || "", item.description || "", item.qty || "", item.rate || "", item.extra || "");
+        });
+      } else {
+        addItem();
+      }
+
+      previewInvoice();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function deleteInvoice(invoiceNumber) {
+      if (!confirm("Delete invoice #" + invoiceNumber + "?")) return;
+
+      localStorage.removeItem("invoice_" + invoiceNumber);
+      loadHistory();
     }
 
     function loadHistory() {
@@ -425,9 +656,8 @@
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key.startsWith("invoice_")) {
-          const data = localStorage.getItem(key);
           try {
-            invoices.push(JSON.parse(data));
+            invoices.push(JSON.parse(localStorage.getItem(key)));
           } catch (e) {}
         }
       }
@@ -442,15 +672,282 @@
       invoices.forEach(inv => {
         const box = document.createElement("div");
         box.className = "history-box";
-        box.innerHTML =
-          "<b>Invoice #:</b> " + (inv.invoice || "") +
-          "<br><b>Date:</b> " + (inv.date || "") +
-          "<br><b>Customer:</b> " + (inv.name || "") +
-          "<br><b>Phone:</b> " + (inv.phone || "") +
-          "<br><b>Job Site:</b> " + (inv.site || "") +
-          "<br><b>Total:</b> $" + (inv.total || "0.00");
+
+        box.innerHTML = `
+          <b>Invoice #:</b> ${inv.invoice || ""}<br>
+          <b>Date:</b> ${inv.date || ""}<br>
+          <b>Customer:</b> ${inv.name || ""}<br>
+          <b>Phone:</b> ${inv.phone || ""}<br>
+          <b>Job Site:</b> ${inv.site || ""}<br>
+          <b>Total:</b> $${inv.totals ? inv.totals.total : "0.00"}
+          <div class="history-actions">
+            <button type="button" onclick="openInvoice('${inv.invoice}')">Open</button>
+            <button type="button" onclick="deleteInvoice('${inv.invoice}')">Delete</button>
+          </div>
+        `;
+
         historyDiv.appendChild(box);
       });
+    }
+
+    function previewInvoice() {
+      const company = JSON.parse(localStorage.getItem("companyInfo") || "{}");
+      const inv = getCurrentInvoiceData();
+
+      let rows = "";
+
+      inv.items.forEach(item => {
+        const qty = parseFloat(item.qty) || 0;
+        const rate = parseFloat(item.rate) || 0;
+        const extra = parseFloat(item.extra) || 0;
+        const amount = (qty * rate) + extra;
+
+        rows += `
+          <tr>
+            <td>${item.service || ""}</td>
+            <td>${item.description || ""}</td>
+            <td>${qty}</td>
+            <td>$${rate.toFixed(2)}</td>
+            <td>$${extra.toFixed(2)}</td>
+            <td>$${amount.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+
+      const html = `
+        <div class="preview-header">
+          <div>
+            <div class="company-title">${company.companyName || "Your Company Name"}</div>
+            <div>${company.companyAddress || ""}</div>
+            <div>${company.companyPhone1 || ""}${company.companyPhone2 ? " / " + company.companyPhone2 : ""}</div>
+            <div>${company.companyEmail || ""}</div>
+            <div>${company.companyWebsite || ""}</div>
+            <div>${company.companyGSTNumber ? "GST: " + company.companyGSTNumber : ""}</div>
+          </div>
+          <div>
+            <h2>INVOICE</h2>
+            <div><b>Invoice #:</b> ${inv.invoice}</div>
+            <div><b>Work Order #:</b> ${inv.workOrder || ""}</div>
+            <div><b>Date:</b> ${inv.date || ""}</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <h3>Bill To</h3>
+            <div><b>Name:</b> ${inv.name || ""}</div>
+            <div><b>Phone:</b> ${inv.phone || ""}</div>
+            <div><b>Email:</b> ${inv.email || ""}</div>
+            <div><b>Address:</b> ${inv.address || ""}</div>
+          </div>
+          <div>
+            <h3>Job Site</h3>
+            <div>${inv.site || ""}</div>
+          </div>
+        </div>
+
+        <table class="preview-table">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Description</th>
+              <th>Qty</th>
+              <th>Rate</th>
+              <th>Extra</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows || '<tr><td colspan="6">No items added</td></tr>'}
+          </tbody>
+        </table>
+
+        <div class="totals">
+          <div><span>Subtotal</span><span>$${inv.totals.subtotal}</span></div>
+          <div><span>Tax (${inv.totals.taxPercent}%)</span><span>$${inv.totals.gst}</span></div>
+          <div><b>Total</b><b>$${inv.totals.total}</b></div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <h3>Notes</h3>
+          <div>${inv.notes || ""}</div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <h3>Company Notes / Warranty</h3>
+          <div>${company.companyNotes || ""}</div>
+        </div>
+      `;
+
+      document.getElementById("previewContent").innerHTML = html;
+    }
+
+    function printPreview() {
+      previewInvoice();
+      window.print();
+    }
+
+    function sendSMS() {
+      previewInvoice();
+
+      const phone = document.getElementById("phone").value.trim();
+      const inv = getCurrentInvoiceData();
+
+      if (!phone) {
+        alert("Add phone number first");
+        return;
+      }
+
+      const msg = encodeURIComponent(
+        "Hello " + (inv.name || "") +
+        ", your invoice #" + inv.invoice +
+        " total is $" + inv.totals.total
+      );
+
+      window.location.href = "sms:" + phone + "?body=" + msg;
+    }
+
+    function sendEmail() {
+      previewInvoice();
+
+      const email = document.getElementById("email").value.trim();
+      const inv = getCurrentInvoiceData();
+
+      if (!email) {
+        alert("Add email first");
+        return;
+      }
+
+      const subject = encodeURIComponent("TopOne Invoice #" + inv.invoice);
+      const body = encodeURIComponent(
+        "Hello " + (inv.name || "") + ",\n\n" +
+        "Invoice #: " + inv.invoice + "\n" +
+        "Total: $" + inv.totals.total + "\n\n" +
+        "Thank you."
+      );
+
+      window.location.href = "mailto:" + email + "?subject=" + subject + "&body=" + body;
+    }
+
+    function downloadBackup() {
+      const data = {};
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (
+          key.startsWith("invoice_") ||
+          key.startsWith("client_") ||
+          key === "invoiceNo" ||
+          key === "companyInfo"
+        ) {
+          data[key] = localStorage.getItem(key);
+        }
+      }
+
+      const file = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(file);
+      a.download = "topone_invoice_backup.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function downloadPDF() {
+      previewInvoice();
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const company = JSON.parse(localStorage.getItem("companyInfo") || "{}");
+      const inv = getCurrentInvoiceData();
+
+      const companyName = company.companyName || "Your Company Name";
+      const companyAddress = company.companyAddress || "";
+      const companyPhones = [company.companyPhone1 || "", company.companyPhone2 || ""].filter(Boolean).join(" / ");
+      const companyEmail = company.companyEmail || "";
+      const companyWebsite = company.companyWebsite || "";
+      const companyGST = company.companyGSTNumber ? "GST: " + company.companyGSTNumber : "";
+      const companyNotes = company.companyNotes || "";
+
+      doc.setFontSize(18);
+      doc.text(companyName, 14, 18);
+
+      doc.setFontSize(10);
+      let y = 26;
+
+      if (companyAddress) { doc.text(companyAddress, 14, y); y += 5; }
+      if (companyPhones) { doc.text(companyPhones, 14, y); y += 5; }
+      if (companyEmail) { doc.text(companyEmail, 14, y); y += 5; }
+      if (companyWebsite) { doc.text(companyWebsite, 14, y); y += 5; }
+      if (companyGST) { doc.text(companyGST, 14, y); y += 5; }
+
+      doc.setFontSize(16);
+      doc.text("INVOICE", 160, 18);
+
+      doc.setFontSize(10);
+      doc.text("Invoice #: " + (inv.invoice || ""), 160, 26);
+      doc.text("Work Order #: " + (inv.workOrder || ""), 160, 32);
+      doc.text("Date: " + (inv.date || ""), 160, 38);
+
+      doc.setFontSize(12);
+      doc.text("Bill To", 14, 55);
+      doc.setFontSize(10);
+      doc.text("Name: " + (inv.name || ""), 14, 62);
+      doc.text("Phone: " + (inv.phone || ""), 14, 68);
+      doc.text("Email: " + (inv.email || ""), 14, 74);
+      doc.text("Address: " + (inv.address || ""), 14, 80);
+
+      doc.setFontSize(12);
+      doc.text("Job Site", 120, 55);
+      doc.setFontSize(10);
+      doc.text(inv.site || "", 120, 62);
+
+      const bodyRows = (inv.items || []).map(item => {
+        const qty = parseFloat(item.qty) || 0;
+        const rate = parseFloat(item.rate) || 0;
+        const extra = parseFloat(item.extra) || 0;
+        const amount = (qty * rate) + extra;
+
+        return [
+          item.service || "",
+          item.description || "",
+          String(qty),
+          "$" + rate.toFixed(2),
+          "$" + extra.toFixed(2),
+          "$" + amount.toFixed(2)
+        ];
+      });
+
+      doc.autoTable({
+        startY: 90,
+        head: [["Service", "Description", "Qty", "Rate", "Extra", "Amount"]],
+        body: bodyRows.length ? bodyRows : [["", "No items added", "", "", "", ""]],
+        styles: { fontSize: 9 },
+        headStyles: { fillColor: [40, 40, 40] }
+      });
+
+      const finalY = doc.lastAutoTable.finalY + 10;
+
+      doc.setFontSize(10);
+      doc.text("Subtotal: $" + inv.totals.subtotal, 140, finalY);
+      doc.text("Tax (" + inv.totals.taxPercent + "%): $" + inv.totals.gst, 140, finalY + 6);
+
+      doc.setFontSize(12);
+      doc.text("Total: $" + inv.totals.total, 140, finalY + 14);
+
+      let notesY = finalY + 28;
+      doc.setFontSize(11);
+      doc.text("Notes", 14, notesY);
+      doc.setFontSize(10);
+      doc.text((inv.notes || "—").toString(), 14, notesY + 6, { maxWidth: 180 });
+
+      notesY += 22;
+      doc.setFontSize(11);
+      doc.text("Company Notes / Warranty", 14, notesY);
+      doc.setFontSize(10);
+      doc.text((companyNotes || "—").toString(), 14, notesY + 6, { maxWidth: 180 });
+
+      doc.save("TopOne-Invoice-" + (inv.invoice || "Invoice") + ".pdf");
     }
 
     function newInvoice() {
@@ -469,76 +966,14 @@
       document.getElementById("notes").value = "";
       document.getElementById("clientList").value = "";
       document.getElementById("items").innerHTML = "";
-      document.getElementById("total").innerHTML = "No total yet.";
+      document.getElementById("previewContent").innerHTML = "No preview yet.";
 
       addItem();
     }
 
-    function sendSMS() {
-      const phone = document.getElementById("phone").value.trim();
-      const totals = calculateTotal();
-      const name = document.getElementById("name").value.trim();
-      const invoice = document.getElementById("invoice").value.trim();
-
-      if (!phone) {
-        alert("Add phone number first");
-        return;
-      }
-
-      const msg = encodeURIComponent(
-        "Hello " + name +
-        ", your TopOne Flooring invoice #" + invoice +
-        " total is $" + totals.total
-      );
-
-      window.location.href = "sms:" + phone + "?body=" + msg;
-    }
-
-    function sendEmail() {
-      const email = document.getElementById("email").value.trim();
-      const totals = calculateTotal();
-      const name = document.getElementById("name").value.trim();
-      const invoice = document.getElementById("invoice").value.trim();
-
-      if (!email) {
-        alert("Add email first");
-        return;
-      }
-
-      const subject = encodeURIComponent("TopOne Flooring Invoice #" + invoice);
-      const body = encodeURIComponent(
-        "Hello " + name + ",\n\n" +
-        "Your invoice total is $" + totals.total + ".\n\n" +
-        "Thank you,\nTopOne Flooring"
-      );
-
-      window.location.href = "mailto:" + email + "?subject=" + subject + "&body=" + body;
-    }
-
-    function downloadBackup() {
-      const data = {};
-
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (
-          key.startsWith("invoice_") ||
-          key.startsWith("client_") ||
-          key === "invoiceNo"
-        ) {
-          data[key] = localStorage.getItem(key);
-        }
-      }
-
-      const file = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(file);
-      a.download = "topone_backup.json";
-      a.click();
-      URL.revokeObjectURL(a.href);
-    }
-
     document.getElementById("date").value = todayDate();
     showInvoiceNumber();
+    loadCompanyInfo();
     loadClients();
     loadHistory();
     addItem();
