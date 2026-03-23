@@ -1,0 +1,119 @@
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+<title>TopOne Flooring Invoice</title>
+
+<style>
+body{
+font-family: Arial;
+background:black;
+color:gold;
+padding:40px;
+}
+
+input, select{
+padding:10px;
+width:300px;
+margin-bottom:15px;
+}
+
+button{
+padding:12px 20px;
+background:gold;
+border:none;
+cursor:pointer;
+margin-right:10px;
+margin-top:10px;
+}
+
+.box{
+background:#111;
+padding:25px;
+width:380px;
+}
+
+#result{
+margin-top:20px;
+line-height:1.8;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>TopOne Flooring</h1>
+
+<label>Customer Name</label><br>
+<input type="text" id="name"><br>
+
+<label>Service</label><br>
+<select id="service">
+<option>Carpet Installation</option>
+<option>LVP Installation</option>
+<option>Linoleum Installation</option>
+<option>Flooring Repairs</option>
+</select><br>
+
+<label>Square Feet</label><br>
+<input type="number" id="sqft"><br>
+
+<label>Price Per Sqft</label><br>
+<input type="number" id="rate"><br>
+
+<label>Removal Cost</label><br>
+<input type="number" id="removal" value="0"><br>
+
+<label>Stairs Cost</label><br>
+<input type="number" id="stairs" value="0"><br>
+
+<label>Dump Fee</label><br>
+<input type="number" id="dump" value="0"><br>
+
+<label>Moving Furniture</label><br>
+<input type="number" id="furniture" value="0"><br>
+
+<button onclick="calc()">Create Invoice</button>
+<button onclick="window.print()">Print</button>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+function calc(){
+
+let name = document.getElementById("name").value;
+let service = document.getElementById("service").value;
+let sqft = Number(document.getElementById("sqft").value);
+let rate = Number(document.getElementById("rate").value);
+let removal = Number(document.getElementById("removal").value);
+let stairs = Number(document.getElementById("stairs").value);
+let dump = Number(document.getElementById("dump").value);
+let furniture = Number(document.getElementById("furniture").value);
+
+let install = sqft * rate;
+let subtotal = install + removal + stairs + dump + furniture;
+let tax = subtotal * 0.05;
+let total = subtotal + tax;
+
+document.getElementById("result").innerHTML =
+"<h2>Invoice</h2>" +
+"Customer: " + name + "<br>" +
+"Service: " + service + "<br>" +
+"Install Cost: $" + install.toFixed(2) + "<br>" +
+"Removal: $" + removal.toFixed(2) + "<br>" +
+"Stairs: $" + stairs.toFixed(2) + "<br>" +
+"Dump Fee: $" + dump.toFixed(2) + "<br>" +
+"Moving Furniture: $" + furniture.toFixed(2) + "<br>" +
+"Subtotal: $" + subtotal.toFixed(2) + "<br>" +
+"GST: $" + tax.toFixed(2) + "<br>" +
+"<b>Total: $" + total.toFixed(2) + "</b>";
+}
+</script>
+
+</body>
+</html>
